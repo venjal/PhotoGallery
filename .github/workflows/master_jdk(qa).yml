@@ -23,13 +23,13 @@ jobs:
         run: nuget restore
 
       - name: Publish to folder
-        run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="$(System.DefaultWorkingDirectory)\published"
+        run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="${{ github.workspace }}\published"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: ASP-app
-          path: $(System.DefaultWorkingDirectory)\published\**
+          path: ${{ github.workspace }}\published\**
 
   deploy:
     runs-on: windows-latest
@@ -39,7 +39,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ASP-app
-          path: $(System.DefaultWorkingDirectory)\published
+          path: ${{ github.workspace }}\published
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -54,4 +54,4 @@ jobs:
         with:
           app-name: 'your-app-name'
           slot-name: 'qa'
-          package: $(System.DefaultWorkingDirectory)\published
+          package: ${{ github.workspace }}\published
