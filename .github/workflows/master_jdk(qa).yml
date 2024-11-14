@@ -25,6 +25,9 @@ jobs:
       - name: Publish to folder
         run: msbuild /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="${{ github.workspace }}\published"
 
+      - name: List published files
+        run: dir ${{ github.workspace }}\published
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -40,6 +43,9 @@ jobs:
         with:
           name: ASP-app
           path: ${{ github.workspace }}\published
+
+      - name: List downloaded files
+        run: dir ${{ github.workspace }}\published
 
       - name: Login to Azure
         uses: azure/login@v2
